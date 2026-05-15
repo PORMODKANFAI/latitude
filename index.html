@@ -174,8 +174,8 @@ function getLocation() {
       bar.style.width = pct + '%';
       if (coords.accuracy > 100) bar.style.background = '#f59e0b';
 
-      // ใช้ ll= เพื่อ center map ตรงพิกัด + q= เพื่อปักหมุด
-      const mapUrl = `https://maps.google.com/maps?ll=${coords.lat},${coords.lng}&q=${coords.lat},${coords.lng}&z=17`;
+      // format /@lat,lng,zoom บังคับ center แผนที่ตรงพิกัด ไม่ redirect
+      const mapUrl = `https://www.google.com/maps/@${coords.lat},${coords.lng},17z`;
       document.getElementById('mapLink').href = mapUrl;
 
       document.getElementById('results').style.display = 'block';
