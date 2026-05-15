@@ -595,6 +595,130 @@
       font-family: var(--mono);
     }
 
+    /* ── Facebook IAB Banner ── */
+    .iab-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 12, 0.92);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      padding: 0;
+    }
+    .iab-sheet {
+      width: 100%;
+      background: #0d1318;
+      border-top: 1px solid rgba(0,255,136,0.25);
+      border-radius: 20px 20px 0 0;
+      padding: 28px 20px 40px;
+      animation: slideUp .35s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .iab-icon-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .iab-icon-box {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,255,136,0.2);
+      background: rgba(0,255,136,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: var(--green2);
+    }
+    .iab-arrow { font-size: 20px; color: var(--text3); }
+    .iab-browser-box {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      border: 1px solid rgba(56,189,248,0.3);
+      background: rgba(56,189,248,0.07);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: var(--blue);
+    }
+    .iab-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .iab-sub {
+      font-size: 13px;
+      color: var(--text2);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .iab-sub strong { color: var(--green2); }
+    .iab-steps {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .iab-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .iab-step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(0,255,136,0.1);
+      border: 1px solid var(--green-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--green2);
+      flex-shrink: 0;
+    }
+    .btn-open-browser {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: var(--green2);
+      color: #001a0d;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 0 28px rgba(0,201,106,0.35);
+      transition: all .2s;
+      margin-bottom: 10px;
+    }
+    .btn-open-browser:hover { background: var(--green); }
+    .btn-open-browser:active { transform: scale(.97); }
+    .btn-continue-anyway {
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text3);
+      font-family: var(--sans);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-continue-anyway:hover { color: var(--text2); border-color: var(--border2); }
+
     /* ── Footer ── */
     .footer {
       margin-top: 32px;
@@ -764,12 +888,111 @@
     </footer>
   </div>
 
+  <!-- Facebook IAB Overlay -->
+  <div class="iab-overlay hide" id="iabOverlay">
+    <div class="iab-sheet">
+      <div class="iab-icon-row">
+        <div class="iab-icon-box"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+        <span class="iab-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></span>
+        <div class="iab-browser-box"><i class="ti ti-world" aria-hidden="true"></i></div>
+      </div>
+      <p class="iab-title">ต้องเปิดใน Browser จริงก่อน</p>
+      <p class="iab-sub">
+        Facebook บล็อก GPS ใน in-app browser<br>
+        กรุณาเปิดใน <strong>Chrome</strong> หรือ <strong>Safari</strong> เพื่อใช้งาน
+      </p>
+      <div class="iab-steps">
+        <div class="iab-step">
+          <span class="iab-step-num">1</span>
+          <span>กดปุ่ม <strong style="color:var(--green2)">เปิดใน Browser</strong> ด้านล่าง</span>
+        </div>
+        <div class="iab-step">
+          <span class="iab-step-num">2</span>
+          <span id="iabStep2">หรือกด <strong style="color:var(--green2)">⋮ เมนู → เปิดใน Chrome</strong></span>
+        </div>
+        <div class="iab-step">
+          <span class="iab-step-num">3</span>
+          <span>กด <strong style="color:var(--green2)">อนุญาต</strong> เมื่อ browser ขอสิทธิ์ GPS</span>
+        </div>
+      </div>
+      <button class="btn-open-browser" id="btnOpenBrowser" onclick="openInBrowser()">
+        <i class="ti ti-external-link"></i>เปิดใน Browser
+      </button>
+      <button class="btn-continue-anyway" onclick="dismissIab()">
+        ใช้งานต่อในหน้านี้ (GPS อาจไม่ทำงาน)
+      </button>
+    </div>
+  </div>
+
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
   <script>
     var watchId = null, coords = null, history = [];
     var dirs = ['N','NE','E','SE','S','SW','W','NW'];
+
+    /* ── Facebook / Line / Instagram IAB Detection ── */
+    function isIAB() {
+      var ua = navigator.userAgent || '';
+      return /FBAN|FBAV|FB_IAB|FB4A|FBIOS|Instagram|Line\/|MicroMessenger|WebView/.test(ua)
+          || (/(iPhone|iPod|iPad)/.test(ua) && !/Safari/.test(ua))
+          || (/Android/.test(ua) && /Version\//.test(ua) && !/Chrome/.test(ua));
+    }
+
+    function isIOS() {
+      return /iPhone|iPad|iPod/.test(navigator.userAgent);
+    }
+
+    function openInBrowser() {
+      var url = window.location.href;
+      // Android: intent:// deep link to Chrome
+      if (/Android/.test(navigator.userAgent)) {
+        var intent = 'intent://' + url.replace(/^https?:\/\//, '') +
+          '#Intent;scheme=https;package=com.android.chrome;end';
+        window.location.href = intent;
+        // fallback after 1.5s
+        setTimeout(function() {
+          window.location.href = url;
+        }, 1500);
+      } else if (isIOS()) {
+        // iOS: x-safari-https scheme
+        window.location.href = url.replace(/^https/, 'x-safari-https');
+        setTimeout(function() {
+          // fallback: copy URL prompt
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function() {
+              toast('คัดลอก URL แล้ว — วางใน Safari');
+            });
+          }
+        }, 1000);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    function dismissIab() {
+      document.getElementById('iabOverlay').classList.add('hide');
+    }
+
+    // Run IAB check on load
+    (function() {
+      if (isIAB()) {
+        var overlay = document.getElementById('iabOverlay');
+        overlay.classList.remove('hide');
+        // Customize step 2 text by platform
+        var ua = navigator.userAgent;
+        var step2 = document.getElementById('iabStep2');
+        if (/FBAN|FBAV|FB_IAB|FB4A|FBIOS/.test(ua)) {
+          step2.innerHTML = 'หรือกด <strong style="color:var(--green2)">⋮ มุมขวาบน → เปิดใน Chrome</strong>';
+        } else if (/Instagram/.test(ua)) {
+          step2.innerHTML = 'หรือกด <strong style="color:var(--green2)">⋮ เมนู → เปิดใน Browser</strong>';
+        } else if (/Line\//.test(ua)) {
+          step2.innerHTML = 'หรือกดไอคอน <strong style="color:var(--green2)">Globe มุมขวาบน → Open in Browser</strong>';
+        } else if (isIOS()) {
+          step2.innerHTML = 'หรือกด <strong style="color:var(--green2)">Share → Open in Safari</strong>';
+        }
+      }
+    })();
 
     function show(id){ document.getElementById(id).classList.remove('hide'); }
     function hide(id){ document.getElementById(id).classList.add('hide'); }
