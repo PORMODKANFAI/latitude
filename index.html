@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ตรวจสอบพิกัด</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -11,9 +13,9 @@
     background: #f0f4f8;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
   .card {
     background: #fff;
@@ -21,7 +23,7 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     padding: 2rem 1.75rem;
     width: 100%;
-    max-width: 420px;
+    max-width: 480px;
   }
   .pin-wrap {
     width: 72px; height: 72px;
@@ -62,11 +64,9 @@
   .status.error { color: #dc2626; }
   .results { display: none; margin-top: 1.25rem; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .metric {
-    background: #f8fafc; border-radius: 10px; padding: 11px 13px;
-  }
+  .metric { background: #f8fafc; border-radius: 10px; padding: 11px 13px; }
   .metric.full { grid-column: 1 / -1; }
-  .metric-label { font-size: 11px; color: #9ca3af; margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+  .metric-label { font-size: 11px; color: #9ca3af; margin-bottom: 3px; }
   .metric-value { font-size: 15px; font-weight: 600; color: #1a1a2e; word-break: break-all; }
   .bar-wrap { height: 4px; background: #e5e7eb; border-radius: 2px; margin-top: 7px; overflow: hidden; }
   .bar { height: 4px; border-radius: 2px; background: #10b981; transition: width 0.6s; }
@@ -79,13 +79,25 @@
     transition: background 0.12s;
   }
   .action-btn:hover { background: #f0f4f8; }
-  .map-link {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    font-size: 0.82rem; color: #185FA5; text-decoration: none; margin-top: 12px;
-    padding: 9px; border-radius: 9px; border: 1px solid #bfdbfe;
-    transition: background 0.12s;
+  #map-wrap {
+    display: none;
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
   }
-  .map-link:hover { background: #eff6ff; }
+  #map { height: 280px; width: 100%; }
+  .map-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px; color: #6b7280;
+  }
+  .open-gmap {
+    font-size: 12px; color: #185FA5; text-decoration: none; font-weight: 500;
+  }
+  .open-gmap:hover { text-decoration: underline; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinning { animation: spin 1s linear infinite; display: inline-block; }
 </style>
@@ -124,20 +136,26 @@
         <div class="bar-wrap"><div class="bar" id="accBar" style="width:0%"></div></div>
       </div>
     </div>
-
     <div class="actions">
       <button class="action-btn" onclick="copyCoords()">&#128203; คัดลอกพิกัด</button>
       <button class="action-btn" onclick="copyJSON()">&#123;&#125; คัดลอก JSON</button>
     </div>
+  </div>
 
-    <a class="map-link" id="mapLink" href="#" target="_blank">
-      &#127759; เปิดใน Google Maps
-    </a>
+  <div id="map-wrap">
+    <div id="map"></div>
+    <div class="map-footer">
+      <span>&#127759; OpenStreetMap</span>
+      <a class="open-gmap" id="gmapLink" href="#" target="_blank">เปิดใน Google Maps ↗</a>
+    </div>
   </div>
 </div>
 
 <script>
 let coords = null;
+let leafletMap = null;
+let marker = null;
+let circle = null;
 
 function getLocation() {
   const btn = document.getElementById('locateBtn');
@@ -174,11 +192,48 @@ function getLocation() {
       bar.style.width = pct + '%';
       if (coords.accuracy > 100) bar.style.background = '#f59e0b';
 
-      // format /@lat,lng,zoom บังคับ center แผนที่ตรงพิกัด ไม่ redirect
-      const mapUrl = `https://www.google.com/maps/@${coords.lat},${coords.lng},17z`;
-      document.getElementById('mapLink').href = mapUrl;
-
       document.getElementById('results').style.display = 'block';
+
+      // แสดงแผนที่
+      const mapWrap = document.getElementById('map-wrap');
+      mapWrap.style.display = 'block';
+
+      // Google Maps link — query=lat,lng เปิด Maps app พร้อมหมุดตรงพิกัด
+      document.getElementById('gmapLink').href =
+        `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
+
+      // สร้าง Leaflet map หรืออัปเดต
+      if (!leafletMap) {
+        leafletMap = L.map('map').setView([coords.lat, coords.lng], 17);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+          maxZoom: 19
+        }).addTo(leafletMap);
+      } else {
+        leafletMap.setView([coords.lat, coords.lng], 17);
+        if (marker) leafletMap.removeLayer(marker);
+        if (circle) leafletMap.removeLayer(circle);
+      }
+
+      marker = L.marker([coords.lat, coords.lng])
+        .addTo(leafletMap)
+        .bindPopup(
+          `<b>ตำแหน่งของคุณ</b><br>
+           ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}<br>
+           ความแม่นยำ: ±${coords.accuracy} ม.`
+        )
+        .openPopup();
+
+      circle = L.circle([coords.lat, coords.lng], {
+        radius: coords.accuracy,
+        color: '#185FA5',
+        fillColor: '#378ADD',
+        fillOpacity: 0.15,
+        weight: 1.5
+      }).addTo(leafletMap);
+
+      setTimeout(() => leafletMap.invalidateSize(), 150);
+
       status.textContent = '✓ พบตำแหน่งเรียบร้อย';
       status.className = 'status';
       pin.classList.remove('active');
