@@ -174,8 +174,8 @@ function getLocation() {
       bar.style.width = pct + '%';
       if (coords.accuracy > 100) bar.style.background = '#f59e0b';
 
-      // Google Maps URL ที่ถูกต้อง: ใช้ place + @ เพื่อปักหมุดตรงพิกัด
-      const mapUrl = `https://www.google.com/maps?q=${coords.lat},${coords.lng}`;
+      // ใช้ ll= เพื่อ center map ตรงพิกัด + q= เพื่อปักหมุด
+      const mapUrl = `https://maps.google.com/maps?ll=${coords.lat},${coords.lng}&q=${coords.lat},${coords.lng}&z=17`;
       document.getElementById('mapLink').href = mapUrl;
 
       document.getElementById('results').style.display = 'block';
