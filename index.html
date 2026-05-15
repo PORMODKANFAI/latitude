@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ตรวจสอบพิกัด</title>
+</head>
+<body>
+
+<button onclick="getLocation()">ดูพิกัดปัจจุบัน</button>
+
+<p id="result"></p>
+
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        document.getElementById("result").innerHTML =
+          `
+          Latitude: ${lat}<br>
+          Longitude: ${lng}<br>
+          Accuracy: ${accuracy} เมตร
+          `;
+
+        console.log("Latitude:", lat);
+        console.log("Longitude:", lng);
+      },
+      function(error) {
+        alert("ไม่สามารถดึงตำแหน่งได้: " + error.message);
+      }
+    );
+  } else {
+    alert("Browser ไม่รองรับ Geolocation");
+  }
+}
+</script>
+
+</body>
+</html>
