@@ -1,254 +1,941 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#080c10">
+  <meta name="description" content="GPS Tracker — ติดตามพิกัดปัจจุบันแบบ real-time พร้อมที่อยู่และประวัติตำแหน่ง">
+  <meta property="og:title" content="GPS Tracker — ค้นหาพิกัดของคุณ">
+  <meta property="og:description" content="เปิดแล้วกด เริ่มติดตาม เพื่อดูพิกัด lat/lng พร้อมที่อยู่แบบ real-time">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://via.placeholder.com/1200x630/080c10/00ff88?text=GPS+Tracker">
+  <title>GPS Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;overflow-x:hidden;overflow-y:auto;font-family:'Prompt',sans-serif}
-.wrap{width:100%;padding:12px;display:flex;flex-direction:column;gap:10px}
-.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;width:100%}
-.header-card{text-align:center;padding:1.25rem 1rem}
-.ring{width:60px;height:60px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 10px;flex-shrink:0;transition:background .4s}
-.ring.pulse::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #185FA5;animation:ripple 1.4s ease-out infinite}
-.ring.ok{background:#E1F5EE}
-.ring.ok .pin{color:#0F6E56}
-.ring.err{background:#FCEBEB}
-.ring.err .pin{color:#A32D2D}
-@keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.pin{font-size:26px;color:#185FA5;transition:color .4s}
-.title{font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px}
-.sub{font-size:12px;color:var(--color-text-secondary)}
-.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-top:8px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
-.badge.on{background:#E1F5EE;color:#0F6E56}
-.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-.dot.blink{animation:blink 1s steps(1) infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
-.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;min-width:0}
-.full{grid-column:1/-1}
-.mlabel{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.mval{font-size:17px;font-weight:600;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.munit{font-size:11px;font-weight:400;color:var(--color-text-secondary);margin-left:2px}
-.accbar{height:3px;border-radius:2px;background:var(--color-border-tertiary);margin-top:7px;overflow:hidden}
-.accfill{height:100%;border-radius:2px;background:#1D9E75;transition:width .8s,background .4s;width:0%}
-.alabel{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.aval{font-size:13px;color:var(--color-text-primary);line-height:1.6;word-break:break-word}
-.controls{display:flex;gap:8px;width:100%}
-.btnmain{flex:1;min-width:0;padding:11px 8px;border-radius:var(--border-radius-md);border:none;font-family:'Prompt',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,transform .1s;white-space:nowrap}
-.btnmain:active{transform:scale(.97)}
-.start{background:#185FA5;color:#fff}
-.start:hover{background:#0C447C}
-.stop{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary)}
-.btnico{flex-shrink:0;background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);padding:11px 13px;border-radius:var(--border-radius-md);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
-.btnico:hover{background:var(--color-background-primary)}
-.uprow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--color-text-secondary);flex-wrap:wrap}
-.sel{font-size:12px;font-family:'Prompt',sans-serif;border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:3px 6px;background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;flex-shrink:0}
-.mapa{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:#185FA5;text-decoration:none;font-family:'Prompt',sans-serif;padding:6px}
-.mapa:hover{text-decoration:underline}
-.hhead{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.hlist{display:flex;flex-direction:column;gap:5px;max-height:130px;overflow-y:auto}
-.hrow{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);gap:8px;min-width:0}
-.hcoords{color:var(--color-text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.htime{color:var(--color-text-secondary);flex-shrink:0;white-space:nowrap}
-.empty{text-align:center;padding:1rem;color:var(--color-text-secondary);font-size:12px}
-.note{font-size:11px;color:var(--color-text-secondary);line-height:1.6;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);display:flex;gap:7px;align-items:flex-start}
-.hide{display:none!important}
-</style>
+    :root {
+      --bg:       #080c10;
+      --bg2:      #0d1318;
+      --bg3:      #121a22;
+      --border:   rgba(0,255,136,0.12);
+      --border2:  rgba(0,255,136,0.22);
+      --green:    #00ff88;
+      --green2:   #00c96a;
+      --green-dim:#005533;
+      --blue:     #38bdf8;
+      --blue-dim: #0c3348;
+      --amber:    #fbbf24;
+      --red:      #f87171;
+      --text:     #e2ffe8;
+      --text2:    #7aab8a;
+      --text3:    #3d6650;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Prompt', sans-serif;
+    }
 
-<div class="wrap">
-  <h2 class="sr-only">ระบบติดตามพิกัด GPS อัตโนมัติ</h2>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+    }
 
-  <div class="card header-card">
-    <div class="ring" id="ring"><i class="ti ti-map-pin pin" aria-hidden="true"></i></div>
-    <p class="title">GPS Tracker</p>
-    <p class="sub" id="hSub">กดเริ่มเพื่อติดตามตำแหน่งแบบ real-time</p>
-    <span class="badge" id="badge"><span class="dot" id="bdot"></span><span id="btxt">ไม่ได้ใช้งาน</span></span>
-  </div>
+    /* ── Grid background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  <div class="note">
-    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:14px;flex-shrink:0;margin-top:1px"></i>
-    <span>เบราว์เซอร์ต้องการให้กดปุ่มก่อนเสมอ — เปิดลิงก์แล้วกด <b>เริ่มติดตาม</b> เพื่อขอพิกัด</span>
-  </div>
+    /* ── Scanline ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  <div class="grid2 hide" id="metricsBox">
-    <div class="metric">
-      <div class="mlabel"><i class="ti ti-arrow-up" aria-hidden="true"></i>ละติจูด</div>
-      <div class="mval" id="vLat">—</div>
-    </div>
-    <div class="metric">
-      <div class="mlabel"><i class="ti ti-arrow-right" aria-hidden="true"></i>ลองจิจูด</div>
-      <div class="mval" id="vLng">—</div>
-    </div>
-    <div class="metric full">
-      <div class="mlabel"><i class="ti ti-circle-check" aria-hidden="true"></i>ความแม่นยำ</div>
-      <div class="mval" id="vAcc">—<span class="munit">เมตร</span></div>
-      <div class="accbar"><div class="accfill" id="accfill"></div></div>
-    </div>
-  </div>
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+    }
 
-  <div class="card hide" id="speedCard">
-    <div class="grid2">
-      <div>
-        <div class="mlabel"><i class="ti ti-run" aria-hidden="true"></i>ความเร็ว</div>
-        <div class="mval" id="vSpeed">0<span class="munit">กม./ชม.</span></div>
+    /* ── Header ── */
+    .header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--green2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--green);
+      position: relative;
+    }
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 4px;
+      background: rgba(0,255,136,0.06);
+    }
+    .logo-name {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .logo-ver {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 1px;
+    }
+    .header-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 10px;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      color: var(--text3);
+      letter-spacing: 1px;
+      transition: all .4s;
+    }
+    .header-badge.on {
+      border-color: var(--green2);
+      color: var(--green);
+      box-shadow: 0 0 12px rgba(0,255,136,0.2);
+    }
+
+    /* ── Main container ── */
+    .main {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Radar card ── */
+    .radar-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 20px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .radar-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,136,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .radar-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 16px;
+    }
+    .radar-ring {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: border-color .4s, box-shadow .4s;
+    }
+    .radar-ring.pulse {
+      border-color: var(--green2);
+      box-shadow: 0 0 0 0 rgba(0,255,136,0.4);
+      animation: radarPulse 1.5s ease-out infinite;
+    }
+    .radar-ring.ok {
+      border-color: var(--green);
+      box-shadow: 0 0 20px rgba(0,255,136,0.25);
+    }
+    .radar-ring.err {
+      border-color: var(--red);
+      box-shadow: 0 0 16px rgba(248,113,113,0.2);
+    }
+    @keyframes radarPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); }
+      70%  { box-shadow: 0 0 0 24px rgba(0,255,136,0); }
+      100% { box-shadow: 0 0 0 0 rgba(0,255,136,0); }
+    }
+    .radar-inner {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--green2);
+      background: rgba(0,255,136,0.04);
+      transition: color .4s;
+    }
+    .radar-ring.ok  .radar-inner { color: var(--green); }
+    .radar-ring.err .radar-inner { color: var(--red); }
+    /* rotating sweep */
+    .radar-sweep {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 270deg, rgba(0,255,136,0.12) 360deg);
+      animation: sweep 2.5s linear infinite;
+      opacity: 0;
+      transition: opacity .4s;
+    }
+    .radar-ring.pulse .radar-sweep { opacity: 1; }
+    @keyframes sweep { to { transform: rotate(360deg); } }
+
+    .rc-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .rc-sub {
+      font-size: 13px;
+      color: var(--text2);
+      min-height: 18px;
+    }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      letter-spacing: 1px;
+      transition: all .4s;
+    }
+    .live-pill.on {
+      border-color: var(--green2);
+      color: var(--green);
+      background: rgba(0,255,136,0.06);
+    }
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .live-dot.blink { animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Note banner ── */
+    .note {
+      background: var(--bg2);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-left: 3px solid var(--blue);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #7cc8e8;
+      line-height: 1.6;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .note i { flex-shrink: 0; margin-top: 1px; font-size: 14px; color: var(--blue); }
+
+    /* ── Coord grid ── */
+    .coord-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .coord-full { grid-column: 1 / -1; }
+
+    .cbox {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cbox::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 40px; height: 40px;
+      background: radial-gradient(circle at top right, rgba(0,255,136,0.05), transparent);
+    }
+    .cbox-label {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .cbox-label i { font-size: 12px; }
+    .cbox-val {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--green);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cbox-unit {
+      font-size: 11px;
+      color: var(--text3);
+      margin-left: 3px;
+    }
+    .acc-bar {
+      height: 2px;
+      background: rgba(0,255,136,0.1);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .acc-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green2);
+      transition: width .8s ease, background .4s;
+      width: 0%;
+    }
+
+    /* ── Info cards ── */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .icard {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-width: 0;
+    }
+    .icard-label {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .icard-label i { font-size: 12px; }
+    .icard-val {
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--blue);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .icard-unit { font-size: 11px; color: var(--text3); margin-left: 3px; }
+
+    /* ── Address card ── */
+    .addr-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .addr-label {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .addr-label i { font-size: 12px; }
+    .addr-val {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-main {
+      flex: 1;
+      min-width: 0;
+      padding: 13px 12px;
+      border-radius: 12px;
+      border: none;
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all .2s;
+      letter-spacing: .5px;
+    }
+    .btn-main:active { transform: scale(.97); }
+    .btn-start {
+      background: var(--green2);
+      color: #001a0d;
+      box-shadow: 0 0 24px rgba(0,201,106,0.3);
+    }
+    .btn-start:hover { background: var(--green); box-shadow: 0 0 32px rgba(0,255,136,0.4); }
+    .btn-stop {
+      background: var(--bg3);
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+    .btn-stop:hover { border-color: var(--red); color: var(--red); }
+    .btn-ico {
+      flex-shrink: 0;
+      background: var(--bg2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+      padding: 13px 15px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+    .btn-ico:hover { border-color: var(--green2); color: var(--green); }
+
+    /* ── Update row ── */
+    .update-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text3);
+      padding: 0 4px;
+    }
+    .update-row select {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--bg2);
+      color: var(--green2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .last-up {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text3);
+      margin-left: auto;
+    }
+
+    /* ── Map link ── */
+    .map-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 12px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(56,189,248,0.25);
+      border-radius: 12px;
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all .2s;
+    }
+    .map-link:hover { background: rgba(56,189,248,0.15); border-color: var(--blue); }
+
+    /* ── History ── */
+    .hist-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .hist-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .hist-title {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text3);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .hist-title i { font-size: 12px; }
+    .btn-clear {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+      color: var(--text3);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-clear:hover { border-color: var(--red); color: var(--red); }
+    .hist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .hist-list::-webkit-scrollbar { width: 3px; }
+    .hist-list::-webkit-scrollbar-track { background: transparent; }
+    .hist-list::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+    .hist-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--bg3);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      min-width: 0;
+    }
+    .hist-coords {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--green2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .hist-time {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text3);
+      flex-shrink: 0;
+    }
+    .hist-empty {
+      text-align: center;
+      padding: 1rem;
+      font-size: 12px;
+      color: var(--text3);
+      font-family: var(--mono);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 32px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text3);
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* ── Utility ── */
+    .hide { display: none !important; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg3);
+      border: 1px solid var(--green2);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 9px 20px;
+      border-radius: 20px;
+      z-index: 9999;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(0,255,136,0.2);
+      animation: toastIn .2s ease;
+    }
+    @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(8px); } }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 360px) {
+      .cbox-val { font-size: 16px; }
+      .icard-val { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div class="logo-name">GPS Tracker</div>
+          <div class="logo-ver">v2.0 · Real-time</div>
+        </div>
       </div>
-      <div>
-        <div class="mlabel"><i class="ti ti-compass" aria-hidden="true"></i>ทิศทาง</div>
-        <div class="mval" id="vDir">—</div>
+      <div class="header-badge" id="headerBadge">OFFLINE</div>
+    </header>
+
+    <main class="main">
+
+      <!-- Radar card -->
+      <div class="radar-card">
+        <div class="radar-wrap">
+          <div class="radar-ring" id="ring">
+            <div class="radar-sweep"></div>
+            <div class="radar-inner">
+              <i class="ti ti-map-pin" id="ringIcon" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+        <h1 class="rc-title">ค้นหาพิกัดปัจจุบัน</h1>
+        <p class="rc-sub" id="rcSub">กดเริ่มเพื่อติดตามตำแหน่งแบบ real-time</p>
+        <div class="live-pill" id="livePill">
+          <span class="live-dot" id="liveDot"></span>
+          <span id="liveText">STANDBY</span>
+        </div>
       </div>
-    </div>
+
+      <!-- Note -->
+      <div class="note">
+        <i class="ti ti-info-circle" aria-hidden="true"></i>
+        <span>ต้องกดปุ่ม <strong>เริ่มติดตาม</strong> ก่อนเสมอ — เบราว์เซอร์ไม่อนุญาตให้ดึงพิกัดอัตโนมัติจาก URL เพื่อความปลอดภัย</span>
+      </div>
+
+      <!-- Coordinate boxes -->
+      <div class="coord-grid hide" id="coordGrid">
+        <div class="cbox">
+          <div class="cbox-label"><i class="ti ti-arrow-up" aria-hidden="true"></i>LATITUDE</div>
+          <div class="cbox-val" id="vLat">—</div>
+        </div>
+        <div class="cbox">
+          <div class="cbox-label"><i class="ti ti-arrow-right" aria-hidden="true"></i>LONGITUDE</div>
+          <div class="cbox-val" id="vLng">—</div>
+        </div>
+        <div class="cbox coord-full">
+          <div class="cbox-label"><i class="ti ti-radar" aria-hidden="true"></i>ACCURACY</div>
+          <div class="cbox-val" id="vAcc">—<span class="cbox-unit">เมตร</span></div>
+          <div class="acc-bar"><div class="acc-fill" id="accFill"></div></div>
+        </div>
+      </div>
+
+      <!-- Speed + Heading -->
+      <div class="info-row hide" id="infoRow">
+        <div class="icard">
+          <div class="icard-label"><i class="ti ti-run" aria-hidden="true"></i>SPEED</div>
+          <div class="icard-val" id="vSpeed">0<span class="icard-unit">km/h</span></div>
+        </div>
+        <div class="icard">
+          <div class="icard-label"><i class="ti ti-compass" aria-hidden="true"></i>HEADING</div>
+          <div class="icard-val" id="vDir">—</div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="addr-card hide" id="addrCard">
+        <div class="addr-label"><i class="ti ti-building" aria-hidden="true"></i>LOCATION</div>
+        <div class="addr-val" id="vAddr">กำลังค้นหาที่อยู่...</div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn-main btn-start" id="btnMain" onclick="startTracking()">
+          <i class="ti ti-current-location"></i>เริ่มติดตาม
+        </button>
+        <button class="btn-ico hide" id="btnCopy" onclick="copyCoords()" title="คัดลอกพิกัด" aria-label="คัดลอกพิกัด">
+          <i class="ti ti-copy"></i>
+        </button>
+        <button class="btn-ico hide" id="btnShare" onclick="shareLocation()" title="แชร์ตำแหน่ง" aria-label="แชร์ตำแหน่ง">
+          <i class="ti ti-share"></i>
+        </button>
+      </div>
+
+      <!-- Update interval + last update -->
+      <div class="update-row hide" id="updateRow">
+        <span>อัปเดตทุก</span>
+        <select id="selInt" onchange="changeInterval()">
+          <option value="3000">3 วินาที</option>
+          <option value="5000" selected>5 วินาที</option>
+          <option value="10000">10 วินาที</option>
+          <option value="30000">30 วินาที</option>
+        </select>
+        <span class="last-up" id="lastUp">—</span>
+      </div>
+
+      <!-- Google Maps link -->
+      <a class="map-link hide" id="mapLink" href="#" target="_blank" rel="noopener">
+        <i class="ti ti-map-2" aria-hidden="true"></i>เปิดใน Google Maps
+      </a>
+
+      <!-- History -->
+      <div class="hist-card hide" id="histCard">
+        <div class="hist-head">
+          <span class="hist-title"><i class="ti ti-clock" aria-hidden="true"></i>POSITION LOG</span>
+          <button class="btn-clear" onclick="clearHist()">CLEAR</button>
+        </div>
+        <div class="hist-list" id="histList">
+          <div class="hist-empty">// ยังไม่มีข้อมูล</div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      GPS TRACKER · POWERED BY BROWSER GEOLOCATION API<br>
+      REQUIRES HTTPS + USER PERMISSION
+    </footer>
   </div>
 
-  <div class="card hide" id="addrCard">
-    <div class="alabel"><i class="ti ti-home" aria-hidden="true"></i>ที่อยู่โดยประมาณ</div>
-    <div class="aval" id="vAddr">กำลังค้นหา...</div>
-  </div>
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
-  <div class="controls">
-    <button class="btnmain start" id="btnMain" onclick="startTracking()">
-      <i class="ti ti-current-location"></i>เริ่มติดตาม
-    </button>
-    <button class="btnico hide" id="btnCopy" onclick="copyCoords()" title="คัดลอกพิกัด" aria-label="คัดลอกพิกัด"><i class="ti ti-copy"></i></button>
-    <button class="btnico hide" id="btnShare" onclick="shareLocation()" title="แชร์" aria-label="แชร์"><i class="ti ti-share"></i></button>
-  </div>
+  <script>
+    var watchId = null, coords = null, history = [];
+    var dirs = ['N','NE','E','SE','S','SW','W','NW'];
 
-  <div class="card hide" id="ctrlCard">
-    <div class="uprow">
-      <span>อัปเดตทุก</span>
-      <select class="sel" id="selInt" onchange="changeInterval()">
-        <option value="3000">3 วินาที</option>
-        <option value="5000" selected>5 วินาที</option>
-        <option value="10000">10 วินาที</option>
-        <option value="30000">30 วินาที</option>
-      </select>
-      <span id="lastUp" style="margin-left:auto">—</span>
-    </div>
-    <a class="mapa" id="mapLink" href="#" target="_blank" rel="noopener">
-      <i class="ti ti-map-2" aria-hidden="true"></i>เปิดใน Google Maps
-    </a>
-  </div>
+    function show(id){ document.getElementById(id).classList.remove('hide'); }
+    function hide(id){ document.getElementById(id).classList.add('hide'); }
+    function $(id){ return document.getElementById(id); }
+    function deg2dir(h){ return h == null ? '—' : dirs[Math.round(h / 45) % 8]; }
 
-  <div class="card hide" id="histCard">
-    <div class="hhead">
-      <span><i class="ti ti-clock" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"></i>ประวัติพิกัด</span>
-      <button class="btnico" onclick="clearHist()" style="padding:4px 10px;font-size:11px;border-radius:6px;">ล้าง</button>
-    </div>
-    <div class="hlist" id="histList"><div class="empty">ยังไม่มีประวัติ</div></div>
-  </div>
-</div>
+    function setRing(s){
+      var r = $('ring');
+      r.className = 'radar-ring' + (s ? ' ' + s : '');
+    }
+    function setSub(t){ $('rcSub').textContent = t; }
+    function setBadge(state, label){
+      var p = $('livePill'), hb = $('headerBadge');
+      if(state === 'live'){
+        p.className = 'live-pill on';
+        $('liveDot').className = 'live-dot blink';
+        $('liveText').textContent = 'LIVE';
+        hb.className = 'header-badge on';
+        hb.textContent = 'LIVE';
+      } else {
+        p.className = 'live-pill';
+        $('liveDot').className = 'live-dot';
+        $('liveText').textContent = label || 'STANDBY';
+        hb.className = 'header-badge';
+        hb.textContent = label || 'OFFLINE';
+      }
+    }
 
-<script>
-var watchId=null,coords=null,history=[],dirs=['N','NE','E','SE','S','SW','W','NW'];
-function show(id){document.getElementById(id).classList.remove('hide')}
-function hide(id){document.getElementById(id).classList.add('hide')}
-function deg2dir(h){return h==null?'—':dirs[Math.round(h/45)%8]}
+    function startTracking(){
+      if(!navigator.geolocation){
+        setSub('เบราว์เซอร์ไม่รองรับ Geolocation');
+        setRing('err'); return;
+      }
+      var btn = $('btnMain');
+      btn.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i>กำลังค้นหา...';
+      btn.disabled = true;
+      setSub('กำลังระบุตำแหน่ง...');
+      setRing('pulse');
+      setBadge('searching', 'SEARCHING');
+      watchId = navigator.geolocation.watchPosition(onPos, onErr, {
+        enableHighAccuracy: true, timeout: 15000, maximumAge: 0
+      });
+    }
 
-function startTracking(){
-  if(!navigator.geolocation){setSub('เบราว์เซอร์ไม่รองรับ GPS');return}
-  var btn=document.getElementById('btnMain');
-  btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i>กำลังค้นหา...';
-  btn.disabled=true;
-  setSub('กำลังระบุตำแหน่ง...');
-  ring('pulse');
-  watchId=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-}
+    function onPos(p){
+      coords = {
+        lat: p.coords.latitude,
+        lng: p.coords.longitude,
+        acc: Math.round(p.coords.accuracy),
+        spd: p.coords.speed,
+        head: p.coords.heading
+      };
+      var now = new Date();
 
-function onPos(p){
-  coords={lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy),spd:p.coords.speed,head:p.coords.heading};
-  var t=new Date();
-  document.getElementById('vLat').textContent=coords.lat.toFixed(6);
-  document.getElementById('vLng').textContent=coords.lng.toFixed(6);
-  document.getElementById('vAcc').innerHTML=coords.acc+'<span class="munit">เมตร</span>';
-  var pct=Math.max(10,Math.min(100,100-(coords.acc/300*100)));
-  var fill=document.getElementById('accfill');
-  fill.style.width=pct+'%';
-  fill.style.background=coords.acc>150?'#BA7517':'#1D9E75';
-  var spd=coords.spd!=null?Math.round(coords.spd*3.6):0;
-  document.getElementById('vSpeed').innerHTML=spd+'<span class="munit">กม./ชม.</span>';
-  document.getElementById('vDir').textContent=deg2dir(coords.head);
-  document.getElementById('mapLink').href='https://www.google.com/maps/place/'+coords.lat+','+coords.lng+'/@'+coords.lat+','+coords.lng+',16z';
-  document.getElementById('lastUp').textContent='อัปเดต '+t.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  show('metricsBox');show('speedCard');show('addrCard');show('ctrlCard');show('histCard');
-  show('btnCopy');show('btnShare');
-  ring('ok');setSub('ติดตามพิกัดแบบ real-time');
-  setBadge(true);
-  var btn=document.getElementById('btnMain');
-  btn.className='btnmain stop';btn.disabled=false;
-  btn.innerHTML='<i class="ti ti-player-stop"></i>หยุดติดตาม';
-  btn.onclick=stopTracking;
-  addHist(coords,t);
-  getAddr(coords.lat,coords.lng);
-}
+      $('vLat').textContent = coords.lat.toFixed(6);
+      $('vLng').textContent = coords.lng.toFixed(6);
+      $('vAcc').innerHTML = coords.acc + '<span class="cbox-unit">เมตร</span>';
 
-function onErr(e){
-  var m={1:'ไม่ได้รับอนุญาต — กรุณาอนุญาต GPS ในเบราว์เซอร์',2:'ไม่สามารถระบุตำแหน่งได้',3:'หมดเวลาค้นหา กรุณาลองอีกครั้ง'};
-  setSub(m[e.code]||'เกิดข้อผิดพลาด');
-  ring('err');setBadge(false);
-  var btn=document.getElementById('btnMain');
-  btn.className='btnmain start';btn.disabled=false;
-  btn.innerHTML='<i class="ti ti-refresh"></i>ลองอีกครั้ง';
-  btn.onclick=startTracking;
-}
+      var pct = Math.max(10, Math.min(100, 100 - (coords.acc / 300 * 100)));
+      var fill = $('accFill');
+      fill.style.width = pct + '%';
+      fill.style.background = coords.acc > 150 ? '#f59e0b' : '#00c96a';
 
-function stopTracking(){
-  if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null}
-  ring('');setSub('หยุดติดตามแล้ว');setBadge(false,'หยุดแล้ว');
-  var btn=document.getElementById('btnMain');
-  btn.className='btnmain start';
-  btn.innerHTML='<i class="ti ti-current-location"></i>เริ่มติดตาม';
-  btn.onclick=startTracking;btn.disabled=false;
-}
+      var spd = coords.spd != null ? Math.round(coords.spd * 3.6) : 0;
+      $('vSpeed').innerHTML = spd + '<span class="icard-unit">km/h</span>';
+      $('vDir').textContent = deg2dir(coords.head);
 
-function changeInterval(){
-  if(watchId!=null){stopTracking();startTracking()}
-}
+      var mapUrl = 'https://www.google.com/maps/place/' + coords.lat + ',' + coords.lng + '/@' + coords.lat + ',' + coords.lng + ',16z';
+      $('mapLink').href = mapUrl;
+      $('lastUp').textContent = now.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
 
-function ring(s){
-  var r=document.getElementById('ring');
-  r.className='ring'+(s?' '+s:'');
-}
-function setSub(t){document.getElementById('hSub').textContent=t}
-function setBadge(on,label){
-  var b=document.getElementById('badge');
-  b.className='badge'+(on?' on':'');
-  document.getElementById('bdot').className='dot'+(on?' blink':'');
-  document.getElementById('btxt').textContent=label||(on?'Live':'ไม่ได้ใช้งาน');
-}
+      show('coordGrid'); show('infoRow'); show('addrCard');
+      show('updateRow'); show('mapLink'); show('histCard');
+      show('btnCopy'); show('btnShare');
 
-async function getAddr(lat,lng){
-  document.getElementById('vAddr').textContent='กำลังค้นหา...';
-  try{
-    var r=await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=th');
-    var d=await r.json();
-    var a=d.address||{};
-    var parts=[a.road,a.suburb||a.village||a.neighbourhood,a.city||a.town||a.county,a.state].filter(Boolean);
-    document.getElementById('vAddr').textContent=parts.join(', ')||d.display_name||'ไม่พบข้อมูล';
-  }catch{document.getElementById('vAddr').textContent='ไม่สามารถดึงข้อมูลที่อยู่ได้'}
-}
+      setRing('ok');
+      setSub('ติดตามพิกัดแบบ real-time');
+      setBadge('live');
 
-function addHist(c,t){
-  history.unshift({lat:c.lat,lng:c.lng,time:t});
-  if(history.length>10)history.pop();
-  document.getElementById('histList').innerHTML=history.map(function(h){
-    return '<div class="hrow"><span class="hcoords">'+h.lat.toFixed(5)+', '+h.lng.toFixed(5)+'</span><span class="htime">'+h.time.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+'</span></div>';
-  }).join('');
-}
-function clearHist(){history=[];document.getElementById('histList').innerHTML='<div class="empty">ยังไม่มีประวัติ</div>'}
+      var btn = $('btnMain');
+      btn.className = 'btn-main btn-stop';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-player-stop"></i>หยุดติดตาม';
+      btn.onclick = stopTracking;
 
-function copyCoords(){
-  if(!coords)return;
-  navigator.clipboard.writeText(coords.lat.toFixed(6)+', '+coords.lng.toFixed(6));
-  toast('คัดลอกพิกัดแล้ว');
-}
-function shareLocation(){
-  if(!coords)return;
-  var url='https://www.google.com/maps?q='+coords.lat+','+coords.lng;
-  if(navigator.share){navigator.share({title:'ตำแหน่งของฉัน',url:url})}
-  else{navigator.clipboard.writeText(url);toast('คัดลอกลิงก์แล้ว')}
-}
-function toast(msg){
-  var t=document.createElement('div');
-  t.textContent=msg;
-  t.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#185FA5;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-family:Prompt,sans-serif;z-index:9999;white-space:nowrap;pointer-events:none';
-  document.body.appendChild(t);setTimeout(function(){t.remove()},2200);
-}
-</script>
+      addHist(coords, now);
+      getAddr(coords.lat, coords.lng);
+    }
+
+    function onErr(e){
+      var m = {
+        1: 'ไม่ได้รับอนุญาต — กรุณาเปิด GPS ในเบราว์เซอร์',
+        2: 'ไม่สามารถระบุตำแหน่งได้',
+        3: 'หมดเวลาค้นหา กรุณาลองอีกครั้ง'
+      };
+      setSub(m[e.code] || 'เกิดข้อผิดพลาด');
+      setRing('err'); setBadge('error', 'ERROR');
+      var btn = $('btnMain');
+      btn.className = 'btn-main btn-start';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-refresh"></i>ลองอีกครั้ง';
+      btn.onclick = startTracking;
+    }
+
+    function stopTracking(){
+      if(watchId != null){ navigator.geolocation.clearWatch(watchId); watchId = null; }
+      setRing(''); setSub('หยุดติดตามแล้ว'); setBadge(false, 'STOPPED');
+      var btn = $('btnMain');
+      btn.className = 'btn-main btn-start';
+      btn.innerHTML = '<i class="ti ti-current-location"></i>เริ่มติดตาม';
+      btn.onclick = startTracking; btn.disabled = false;
+    }
+
+    function changeInterval(){
+      if(watchId != null){ stopTracking(); startTracking(); }
+    }
+
+    async function getAddr(lat, lng){
+      $('vAddr').textContent = 'กำลังค้นหา...';
+      try {
+        var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json&accept-language=th');
+        var d = await r.json();
+        var a = d.address || {};
+        var parts = [a.road, a.suburb || a.village || a.neighbourhood, a.city || a.town || a.county, a.state].filter(Boolean);
+        $('vAddr').textContent = parts.join(', ') || d.display_name || 'ไม่พบข้อมูล';
+      } catch(e) {
+        $('vAddr').textContent = 'ไม่สามารถดึงข้อมูลที่อยู่ได้';
+      }
+    }
+
+    function addHist(c, t){
+      history.unshift({ lat: c.lat, lng: c.lng, time: t });
+      if(history.length > 10) history.pop();
+      $('histList').innerHTML = history.map(function(h){
+        return '<div class="hist-row">' +
+          '<span class="hist-coords">' + h.lat.toFixed(5) + ', ' + h.lng.toFixed(5) + '</span>' +
+          '<span class="hist-time">' + h.time.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) + '</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    function clearHist(){
+      history = [];
+      $('histList').innerHTML = '<div class="hist-empty">// ยังไม่มีข้อมูล</div>';
+    }
+
+    function copyCoords(){
+      if(!coords) return;
+      navigator.clipboard.writeText(coords.lat.toFixed(6) + ', ' + coords.lng.toFixed(6));
+      toast('คัดลอกพิกัดแล้ว ✓');
+    }
+
+    function shareLocation(){
+      if(!coords) return;
+      var url = 'https://www.google.com/maps?q=' + coords.lat + ',' + coords.lng;
+      if(navigator.share){ navigator.share({ title: 'ตำแหน่งของฉัน', url: url }); }
+      else { navigator.clipboard.writeText(url); toast('คัดลอกลิงก์แล้ว ✓'); }
+    }
+
+    function toast(msg){
+      var t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(function(){ t.remove(); }, 2200);
+    }
+  </script>
+</body>
+</html>
