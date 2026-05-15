@@ -26,34 +26,24 @@
     max-width: 480px;
   }
   .pin-wrap {
-    width: 72px; height: 72px;
-    border-radius: 50%;
+    width: 72px; height: 72px; border-radius: 50%;
     background: #e6f1fb;
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 1.25rem;
-    position: relative;
+    margin: 0 auto 1.25rem; position: relative;
   }
   .pin-wrap::before {
-    content: '';
-    position: absolute;
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    border: 2px solid #378ADD;
-    opacity: 0;
+    content: ''; position: absolute;
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 2px solid #378ADD; opacity: 0;
   }
   .pin-wrap.active::before { animation: ripple 1.2s ease-out infinite; }
-  @keyframes ripple {
-    0%   { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(1.9); opacity: 0; }
-  }
+  @keyframes ripple { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(1.9); opacity:0; } }
   .pin-wrap svg { width: 32px; height: 32px; fill: #185FA5; }
   h1 { font-size: 1.2rem; font-weight: 600; color: #1a1a2e; text-align: center; margin-bottom: 4px; }
   .subtitle { font-size: 0.875rem; color: #6b7280; text-align: center; margin-bottom: 1.5rem; }
   .btn {
-    width: 100%; padding: 13px;
-    background: #185FA5; color: #fff;
-    border: none; border-radius: 12px;
-    font-size: 0.95rem; font-weight: 600;
+    width: 100%; padding: 13px; background: #185FA5; color: #fff;
+    border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600;
     cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: background 0.15s, transform 0.1s;
   }
@@ -62,6 +52,7 @@
   .btn:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
   .status { font-size: 0.8rem; color: #6b7280; text-align: center; margin-top: 10px; min-height: 18px; }
   .status.error { color: #dc2626; }
+  .status.warn { color: #d97706; }
   .results { display: none; margin-top: 1.25rem; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .metric { background: #f8fafc; border-radius: 10px; padding: 11px 13px; }
@@ -70,33 +61,43 @@
   .metric-value { font-size: 15px; font-weight: 600; color: #1a1a2e; word-break: break-all; }
   .bar-wrap { height: 4px; background: #e5e7eb; border-radius: 2px; margin-top: 7px; overflow: hidden; }
   .bar { height: 4px; border-radius: 2px; background: #10b981; transition: width 0.6s; }
+
+  /* Warning box when accuracy is bad */
+  .warn-box {
+    display: none;
+    background: #fffbeb; border: 1px solid #fcd34d;
+    border-radius: 10px; padding: 12px 14px; margin-top: 10px;
+  }
+  .warn-box p { font-size: 12px; color: #92400e; margin-bottom: 10px; line-height: 1.5; }
+  .manual-row { display: flex; gap: 8px; align-items: center; }
+  .manual-row input {
+    flex: 1; padding: 8px 10px; border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 13px; color: #1a1a2e; outline: none;
+  }
+  .manual-row input:focus { border-color: #185FA5; }
+  .manual-btn {
+    padding: 8px 14px; background: #185FA5; color: #fff;
+    border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+  }
+  .manual-btn:hover { background: #0C447C; }
+
   .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .action-btn {
-    flex: 1; padding: 8px 10px;
-    background: none; border: 1px solid #e5e7eb; border-radius: 8px;
-    font-size: 12px; color: #6b7280; cursor: pointer;
+    flex: 1; padding: 8px 10px; background: none; border: 1px solid #e5e7eb;
+    border-radius: 8px; font-size: 12px; color: #6b7280; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 5px;
     transition: background 0.12s;
   }
   .action-btn:hover { background: #f0f4f8; }
-  #map-wrap {
-    display: none;
-    margin-top: 1rem;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid #e5e7eb;
-  }
+  #map-wrap { display: none; margin-top: 1rem; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
   #map { height: 280px; width: 100%; }
   .map-footer {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border-top: 1px solid #e5e7eb;
-    font-size: 12px; color: #6b7280;
+    padding: 8px 12px; background: #f8fafc;
+    border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;
   }
-  .open-gmap {
-    font-size: 12px; color: #185FA5; text-decoration: none; font-weight: 500;
-  }
+  .open-gmap { font-size: 12px; color: #185FA5; text-decoration: none; font-weight: 500; }
   .open-gmap:hover { text-decoration: underline; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinning { animation: spin 1s linear infinite; display: inline-block; }
@@ -105,9 +106,7 @@
 <body>
 <div class="card">
   <div class="pin-wrap" id="pinWrap">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-    </svg>
+    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
   </div>
 
   <h1>พิกัดของคุณ</h1>
@@ -136,6 +135,16 @@
         <div class="bar-wrap"><div class="bar" id="accBar" style="width:0%"></div></div>
       </div>
     </div>
+
+    <!-- แสดงเมื่อ accuracy แย่ (> 500 ม.) -->
+    <div class="warn-box" id="warnBox">
+      <p>⚠️ ความแม่นยำต่ำมาก — อุปกรณ์นี้อาจไม่มี GPS หรือ browser ไม่ได้รับสิทธิ์<br>กรอกพิกัดเองได้เลย (เช่น จาก Google Maps)</p>
+      <div class="manual-row">
+        <input type="text" id="manualInput" placeholder="13.819989, 100.016230" />
+        <button class="manual-btn" onclick="applyManual()">ใช้พิกัดนี้</button>
+      </div>
+    </div>
+
     <div class="actions">
       <button class="action-btn" onclick="copyCoords()">&#128203; คัดลอกพิกัด</button>
       <button class="action-btn" onclick="copyJSON()">&#123;&#125; คัดลอก JSON</button>
@@ -177,81 +186,34 @@ function getLocation() {
 
   navigator.geolocation.getCurrentPosition(
     function(pos) {
-      coords = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        accuracy: Math.round(pos.coords.accuracy)
-      };
+      const accuracy = Math.round(pos.coords.accuracy);
+      showCoords(pos.coords.latitude, pos.coords.longitude, accuracy);
 
-      document.getElementById('lat').textContent = coords.lat.toFixed(6);
-      document.getElementById('lng').textContent = coords.lng.toFixed(6);
-      document.getElementById('acc').textContent = coords.accuracy + ' เมตร';
-
-      const pct = Math.max(10, Math.min(100, 100 - (coords.accuracy / 200 * 100)));
-      const bar = document.getElementById('accBar');
-      bar.style.width = pct + '%';
-      if (coords.accuracy > 100) bar.style.background = '#f59e0b';
-
-      document.getElementById('results').style.display = 'block';
-
-      // แสดงแผนที่
-      const mapWrap = document.getElementById('map-wrap');
-      mapWrap.style.display = 'block';
-
-      // Google Maps link — query=lat,lng เปิด Maps app พร้อมหมุดตรงพิกัด
-      document.getElementById('gmapLink').href =
-        `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`;
-
-      // สร้าง Leaflet map หรืออัปเดต
-      if (!leafletMap) {
-        leafletMap = L.map('map').setView([coords.lat, coords.lng], 17);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors',
-          maxZoom: 19
-        }).addTo(leafletMap);
+      // ถ้า accuracy แย่กว่า 500 ม. ให้เตือน
+      if (accuracy > 500) {
+        document.getElementById('warnBox').style.display = 'block';
+        document.getElementById('statusMsg').textContent = '⚠️ พบตำแหน่ง แต่ความแม่นยำต่ำมาก (อุปกรณ์ไม่มี GPS)';
+        document.getElementById('statusMsg').className = 'status warn';
       } else {
-        leafletMap.setView([coords.lat, coords.lng], 17);
-        if (marker) leafletMap.removeLayer(marker);
-        if (circle) leafletMap.removeLayer(circle);
+        document.getElementById('warnBox').style.display = 'none';
+        document.getElementById('statusMsg').textContent = '✓ พบตำแหน่งเรียบร้อย';
+        document.getElementById('statusMsg').className = 'status';
       }
 
-      marker = L.marker([coords.lat, coords.lng])
-        .addTo(leafletMap)
-        .bindPopup(
-          `<b>ตำแหน่งของคุณ</b><br>
-           ${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}<br>
-           ความแม่นยำ: ±${coords.accuracy} ม.`
-        )
-        .openPopup();
-
-      circle = L.circle([coords.lat, coords.lng], {
-        radius: coords.accuracy,
-        color: '#185FA5',
-        fillColor: '#378ADD',
-        fillOpacity: 0.15,
-        weight: 1.5
-      }).addTo(leafletMap);
-
-      setTimeout(() => leafletMap.invalidateSize(), 150);
-
-      status.textContent = '✓ พบตำแหน่งเรียบร้อย';
-      status.className = 'status';
       pin.classList.remove('active');
       pin.style.background = '#d1fae5';
       pin.querySelector('svg').style.fill = '#059669';
-
       btn.disabled = false;
       document.getElementById('btnIcon').textContent = '↺';
       document.getElementById('btnText').textContent = 'อัปเดตพิกัด';
     },
     function(error) {
-      const msgs = {
-        1: 'ไม่ได้รับอนุญาต กรุณาอนุญาตการเข้าถึงตำแหน่งในเบราว์เซอร์',
-        2: 'ไม่สามารถระบุตำแหน่งได้ในขณะนี้',
-        3: 'หมดเวลาในการค้นหาตำแหน่ง'
-      };
-      status.textContent = msgs[error.code] || 'เกิดข้อผิดพลาด: ' + error.message;
-      status.className = 'status error';
+      const msgs = { 1: 'ไม่ได้รับอนุญาต กรุณาอนุญาตการเข้าถึงตำแหน่งในเบราว์เซอร์', 2: 'ไม่สามารถระบุตำแหน่งได้', 3: 'หมดเวลาในการค้นหา' };
+      document.getElementById('statusMsg').textContent = msgs[error.code] || 'เกิดข้อผิดพลาด';
+      document.getElementById('statusMsg').className = 'status error';
+      // เปิด fallback กรอกเอง
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('warnBox').style.display = 'block';
       pin.classList.remove('active');
       btn.disabled = false;
       document.getElementById('btnIcon').textContent = '↺';
@@ -259,6 +221,67 @@ function getLocation() {
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
+}
+
+function applyManual() {
+  const val = document.getElementById('manualInput').value.trim();
+  const parts = val.split(',');
+  if (parts.length !== 2) { alert('รูปแบบไม่ถูกต้อง ตัวอย่าง: 13.819989, 100.016230'); return; }
+  const lat = parseFloat(parts[0].trim());
+  const lng = parseFloat(parts[1].trim());
+  if (isNaN(lat) || isNaN(lng)) { alert('พิกัดไม่ถูกต้อง'); return; }
+  showCoords(lat, lng, 0);
+  document.getElementById('acc').textContent = 'กรอกเอง';
+  document.getElementById('accBar').style.width = '100%';
+  document.getElementById('accBar').style.background = '#10b981';
+  document.getElementById('warnBox').style.display = 'none';
+  document.getElementById('statusMsg').textContent = '✓ ใช้พิกัดที่กรอกเอง';
+  document.getElementById('statusMsg').className = 'status';
+}
+
+function showCoords(lat, lng, accuracy) {
+  coords = { lat, lng, accuracy };
+
+  document.getElementById('lat').textContent = lat.toFixed(6);
+  document.getElementById('lng').textContent = lng.toFixed(6);
+  if (accuracy > 0) {
+    document.getElementById('acc').textContent = accuracy.toLocaleString() + ' เมตร';
+    const pct = Math.max(5, Math.min(100, 100 - (accuracy / 1000 * 100)));
+    const bar = document.getElementById('accBar');
+    bar.style.width = pct + '%';
+    bar.style.background = accuracy > 500 ? '#f59e0b' : '#10b981';
+  }
+
+  document.getElementById('results').style.display = 'block';
+
+  document.getElementById('gmapLink').href =
+    `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+  const mapWrap = document.getElementById('map-wrap');
+  mapWrap.style.display = 'block';
+
+  if (!leafletMap) {
+    leafletMap = L.map('map').setView([lat, lng], 17);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors', maxZoom: 19
+    }).addTo(leafletMap);
+  } else {
+    leafletMap.setView([lat, lng], 17);
+    if (marker) leafletMap.removeLayer(marker);
+    if (circle) leafletMap.removeLayer(circle);
+  }
+
+  marker = L.marker([lat, lng]).addTo(leafletMap)
+    .bindPopup(`<b>ตำแหน่งของคุณ</b><br>${lat.toFixed(6)}, ${lng.toFixed(6)}${accuracy > 0 ? '<br>ความแม่นยำ: ±' + accuracy.toLocaleString() + ' ม.' : ''}`)
+    .openPopup();
+
+  if (accuracy > 0) {
+    circle = L.circle([lat, lng], {
+      radius: accuracy, color: '#185FA5', fillColor: '#378ADD', fillOpacity: 0.12, weight: 1.5
+    }).addTo(leafletMap);
+  }
+
+  setTimeout(() => leafletMap.invalidateSize(), 150);
 }
 
 function copyCoords() {
@@ -269,11 +292,7 @@ function copyCoords() {
 
 function copyJSON() {
   if (!coords) return;
-  navigator.clipboard.writeText(JSON.stringify({
-    latitude: coords.lat,
-    longitude: coords.lng,
-    accuracy: coords.accuracy
-  }, null, 2));
+  navigator.clipboard.writeText(JSON.stringify({ latitude: coords.lat, longitude: coords.lng, accuracy: coords.accuracy }, null, 2));
   alert('คัดลอก JSON แล้ว!');
 }
 </script>
