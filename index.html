@@ -1,271 +1,254 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body,html{font-family:'Prompt',sans-serif;}
-  :root{--blue50:#E6F1FB;--blue100:#B5D4F4;--blue600:#185FA5;--blue700:#0C447C;--teal50:#E1F5EE;--teal600:#0F6E56;--amber50:#FAEEDA;--amber600:#854F0B;--red50:#FCEBEB;--red600:#A32D2D;}
-  .wrap{padding:1rem;display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto;}
-  .header-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;text-align:center;}
-  .pulse-ring{width:64px;height:64px;border-radius:50%;background:var(--blue50);display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 12px;transition:background .4s;}
-  .pulse-ring.active::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid var(--blue600);animation:ripple 1.4s ease-out infinite;}
-  .pulse-ring.found{background:var(--teal50);}
-  .pulse-ring.error{background:var(--red50);}
-  @keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
-  .pin-icon{font-size:28px;color:var(--blue600);transition:color .4s;}
-  .pulse-ring.found .pin-icon{color:var(--teal600);}
-  .pulse-ring.error .pin-icon{color:var(--red600);}
-  .h-title{font-size:16px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px;}
-  .h-sub{font-size:13px;color:var(--color-text-secondary);}
-  .badge-live{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-top:8px;}
-  .badge-live.on{background:var(--teal50);color:var(--teal600);}
-  .badge-live.off{background:var(--color-background-secondary);color:var(--color-text-secondary);}
-  .dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
-  .dot.blink{animation:blink 1.2s steps(1) infinite;}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-  .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;}
-  .metric-full{grid-column:1/-1;}
-  .m-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;display:flex;align-items:center;gap:5px;}
-  .m-val{font-size:18px;font-weight:600;color:var(--color-text-primary);line-height:1;}
-  .m-unit{font-size:12px;font-weight:400;color:var(--color-text-secondary);margin-left:3px;}
-  .acc-bar{height:3px;border-radius:2px;background:var(--color-border-tertiary);margin-top:8px;overflow:hidden;}
-  .acc-fill{height:100%;border-radius:2px;background:#1D9E75;transition:width .8s;}
-  .address-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;}
-  .a-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
-  .a-val{font-size:14px;color:var(--color-text-primary);line-height:1.5;}
-  .speed-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .history-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;}
-  .h-head{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
-  .history-list{display:flex;flex-direction:column;gap:6px;max-height:140px;overflow-y:auto;}
-  .h-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);}
-  .h-coords{color:var(--color-text-primary);font-weight:500;}
-  .h-time{color:var(--color-text-secondary);}
-  .controls{display:flex;gap:8px;}
-  .btn-main{flex:1;padding:11px;border-radius:var(--border-radius-md);border:none;font-family:'Prompt',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .15s,transform .1s;}
-  .btn-main:active{transform:scale(.98);}
-  .btn-start{background:var(--blue600);color:#fff;}
-  .btn-start:hover{background:var(--blue700);}
-  .btn-stop{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);}
-  .btn-stop:hover{background:var(--color-background-primary);}
-  .btn-icon{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);padding:11px 14px;border-radius:var(--border-radius-md);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
-  .btn-icon:hover{background:var(--color-background-primary);}
-  .map-a{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:var(--blue600);text-decoration:none;padding:8px;font-family:'Prompt',sans-serif;}
-  .map-a:hover{text-decoration:underline;}
-  .update-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);padding:4px 2px;}
-  .interval-sel{font-size:12px;font-family:'Prompt',sans-serif;border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:3px 8px;background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;}
-  .empty-state{text-align:center;padding:1.5rem;color:var(--color-text-secondary);font-size:13px;}
-  @keyframes spin{to{transform:rotate(360deg)}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;overflow-x:hidden;overflow-y:auto;font-family:'Prompt',sans-serif}
+.wrap{width:100%;padding:12px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;width:100%}
+.header-card{text-align:center;padding:1.25rem 1rem}
+.ring{width:60px;height:60px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 10px;flex-shrink:0;transition:background .4s}
+.ring.pulse::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #185FA5;animation:ripple 1.4s ease-out infinite}
+.ring.ok{background:#E1F5EE}
+.ring.ok .pin{color:#0F6E56}
+.ring.err{background:#FCEBEB}
+.ring.err .pin{color:#A32D2D}
+@keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.2);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pin{font-size:26px;color:#185FA5;transition:color .4s}
+.title{font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px}
+.sub{font-size:12px;color:var(--color-text-secondary)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-top:8px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.badge.on{background:#E1F5EE;color:#0F6E56}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.dot.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;min-width:0}
+.full{grid-column:1/-1}
+.mlabel{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.mval{font-size:17px;font-weight:600;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.munit{font-size:11px;font-weight:400;color:var(--color-text-secondary);margin-left:2px}
+.accbar{height:3px;border-radius:2px;background:var(--color-border-tertiary);margin-top:7px;overflow:hidden}
+.accfill{height:100%;border-radius:2px;background:#1D9E75;transition:width .8s,background .4s;width:0%}
+.alabel{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.aval{font-size:13px;color:var(--color-text-primary);line-height:1.6;word-break:break-word}
+.controls{display:flex;gap:8px;width:100%}
+.btnmain{flex:1;min-width:0;padding:11px 8px;border-radius:var(--border-radius-md);border:none;font-family:'Prompt',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s,transform .1s;white-space:nowrap}
+.btnmain:active{transform:scale(.97)}
+.start{background:#185FA5;color:#fff}
+.start:hover{background:#0C447C}
+.stop{background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary)}
+.btnico{flex-shrink:0;background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);padding:11px 13px;border-radius:var(--border-radius-md);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.btnico:hover{background:var(--color-background-primary)}
+.uprow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--color-text-secondary);flex-wrap:wrap}
+.sel{font-size:12px;font-family:'Prompt',sans-serif;border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:3px 6px;background:var(--color-background-secondary);color:var(--color-text-primary);cursor:pointer;flex-shrink:0}
+.mapa{display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;color:#185FA5;text-decoration:none;font-family:'Prompt',sans-serif;padding:6px}
+.mapa:hover{text-decoration:underline}
+.hhead{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.hlist{display:flex;flex-direction:column;gap:5px;max-height:130px;overflow-y:auto}
+.hrow{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);gap:8px;min-width:0}
+.hcoords{color:var(--color-text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.htime{color:var(--color-text-secondary);flex-shrink:0;white-space:nowrap}
+.empty{text-align:center;padding:1rem;color:var(--color-text-secondary);font-size:12px}
+.note{font-size:11px;color:var(--color-text-secondary);line-height:1.6;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);display:flex;gap:7px;align-items:flex-start}
+.hide{display:none!important}
 </style>
 
 <div class="wrap">
   <h2 class="sr-only">ระบบติดตามพิกัด GPS อัตโนมัติ</h2>
 
-  <div class="header-card">
-    <div class="pulse-ring" id="ring"><i class="ti ti-map-pin pin-icon"></i></div>
-    <p class="h-title">GPS Tracker</p>
-    <p class="h-sub" id="hSub">กดเริ่มเพื่อติดตามตำแหน่งแบบ real-time</p>
-    <span class="badge-live off" id="liveBadge"><span class="dot" id="liveDot"></span><span id="liveText">ไม่ได้ใช้งาน</span></span>
+  <div class="card header-card">
+    <div class="ring" id="ring"><i class="ti ti-map-pin pin" aria-hidden="true"></i></div>
+    <p class="title">GPS Tracker</p>
+    <p class="sub" id="hSub">กดเริ่มเพื่อติดตามตำแหน่งแบบ real-time</p>
+    <span class="badge" id="badge"><span class="dot" id="bdot"></span><span id="btxt">ไม่ได้ใช้งาน</span></span>
   </div>
 
-  <div class="metrics-grid" id="metricsBox" style="display:none">
+  <div class="note">
+    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:14px;flex-shrink:0;margin-top:1px"></i>
+    <span>เบราว์เซอร์ต้องการให้กดปุ่มก่อนเสมอ — เปิดลิงก์แล้วกด <b>เริ่มติดตาม</b> เพื่อขอพิกัด</span>
+  </div>
+
+  <div class="grid2 hide" id="metricsBox">
     <div class="metric">
-      <div class="m-label"><i class="ti ti-arrow-up" aria-hidden="true"></i>ละติจูด</div>
-      <div class="m-val" id="vLat">—</div>
+      <div class="mlabel"><i class="ti ti-arrow-up" aria-hidden="true"></i>ละติจูด</div>
+      <div class="mval" id="vLat">—</div>
     </div>
     <div class="metric">
-      <div class="m-label"><i class="ti ti-arrow-right" aria-hidden="true"></i>ลองจิจูด</div>
-      <div class="m-val" id="vLng">—</div>
+      <div class="mlabel"><i class="ti ti-arrow-right" aria-hidden="true"></i>ลองจิจูด</div>
+      <div class="mval" id="vLng">—</div>
     </div>
-    <div class="metric metric-full">
-      <div class="m-label"><i class="ti ti-circle-check" aria-hidden="true"></i>ความแม่นยำ</div>
-      <div class="m-val" id="vAcc">—<span class="m-unit">เมตร</span></div>
-      <div class="acc-bar"><div class="acc-fill" id="accFill" style="width:0%"></div></div>
+    <div class="metric full">
+      <div class="mlabel"><i class="ti ti-circle-check" aria-hidden="true"></i>ความแม่นยำ</div>
+      <div class="mval" id="vAcc">—<span class="munit">เมตร</span></div>
+      <div class="accbar"><div class="accfill" id="accfill"></div></div>
     </div>
   </div>
 
-  <div class="address-card" id="addrCard" style="display:none">
-    <div class="a-label"><i class="ti ti-home" aria-hidden="true"></i>ที่อยู่โดยประมาณ</div>
-    <div class="a-val" id="vAddr"><span style="color:var(--color-text-secondary);font-size:13px">กำลังค้นหาที่อยู่...</span></div>
+  <div class="card hide" id="speedCard">
+    <div class="grid2">
+      <div>
+        <div class="mlabel"><i class="ti ti-run" aria-hidden="true"></i>ความเร็ว</div>
+        <div class="mval" id="vSpeed">0<span class="munit">กม./ชม.</span></div>
+      </div>
+      <div>
+        <div class="mlabel"><i class="ti ti-compass" aria-hidden="true"></i>ทิศทาง</div>
+        <div class="mval" id="vDir">—</div>
+      </div>
+    </div>
   </div>
 
-  <div class="speed-card" id="speedCard" style="display:none">
-    <div>
-      <div class="m-label"><i class="ti ti-run" aria-hidden="true"></i>ความเร็ว</div>
-      <div class="m-val" id="vSpeed">0<span class="m-unit">กม./ชม.</span></div>
-    </div>
-    <div>
-      <div class="m-label"><i class="ti ti-compass" aria-hidden="true"></i>ทิศทาง</div>
-      <div class="m-val" id="vHeading">—</div>
-    </div>
+  <div class="card hide" id="addrCard">
+    <div class="alabel"><i class="ti ti-home" aria-hidden="true"></i>ที่อยู่โดยประมาณ</div>
+    <div class="aval" id="vAddr">กำลังค้นหา...</div>
   </div>
 
   <div class="controls">
-    <button class="btn-main btn-start" id="btnStart" onclick="startTracking()">
+    <button class="btnmain start" id="btnMain" onclick="startTracking()">
       <i class="ti ti-current-location"></i>เริ่มติดตาม
     </button>
-    <button class="btn-icon" id="btnCopy" onclick="copyCoords()" title="คัดลอกพิกัด" style="display:none"><i class="ti ti-copy"></i></button>
-    <button class="btn-icon" onclick="shareLocation()" id="btnShare" title="แชร์" style="display:none"><i class="ti ti-share"></i></button>
+    <button class="btnico hide" id="btnCopy" onclick="copyCoords()" title="คัดลอกพิกัด" aria-label="คัดลอกพิกัด"><i class="ti ti-copy"></i></button>
+    <button class="btnico hide" id="btnShare" onclick="shareLocation()" title="แชร์" aria-label="แชร์"><i class="ti ti-share"></i></button>
   </div>
 
-  <div class="update-row" id="updateRow" style="display:none">
-    <span>อัปเดตทุก</span>
-    <select class="interval-sel" id="selInterval" onchange="changeInterval()">
-      <option value="3000">3 วินาที</option>
-      <option value="5000" selected>5 วินาที</option>
-      <option value="10000">10 วินาที</option>
-      <option value="30000">30 วินาที</option>
-    </select>
-    <span id="lastUpdate">—</span>
+  <div class="card hide" id="ctrlCard">
+    <div class="uprow">
+      <span>อัปเดตทุก</span>
+      <select class="sel" id="selInt" onchange="changeInterval()">
+        <option value="3000">3 วินาที</option>
+        <option value="5000" selected>5 วินาที</option>
+        <option value="10000">10 วินาที</option>
+        <option value="30000">30 วินาที</option>
+      </select>
+      <span id="lastUp" style="margin-left:auto">—</span>
+    </div>
+    <a class="mapa" id="mapLink" href="#" target="_blank" rel="noopener">
+      <i class="ti ti-map-2" aria-hidden="true"></i>เปิดใน Google Maps
+    </a>
   </div>
 
-  <a class="map-a" id="mapLink" href="#" target="_blank" style="display:none">
-    <i class="ti ti-map-2" aria-hidden="true"></i>เปิดใน Google Maps
-  </a>
-
-  <div class="history-card" id="histCard" style="display:none">
-    <div class="h-head">
+  <div class="card hide" id="histCard">
+    <div class="hhead">
       <span><i class="ti ti-clock" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"></i>ประวัติพิกัด</span>
-      <button class="btn-icon" onclick="clearHistory()" style="padding:4px 8px;font-size:11px;border-radius:6px;">ล้าง</button>
+      <button class="btnico" onclick="clearHist()" style="padding:4px 10px;font-size:11px;border-radius:6px;">ล้าง</button>
     </div>
-    <div class="history-list" id="histList">
-      <div class="empty-state">ยังไม่มีประวัติ</div>
-    </div>
+    <div class="hlist" id="histList"><div class="empty">ยังไม่มีประวัติ</div></div>
   </div>
 </div>
 
 <script>
-let watchId = null, timerInterval = null, coords = null, history = [], intervalMs = 5000;
-const headings = ['N','NE','E','SE','S','SW','W','NW','N'];
-
-function degToDir(h){return h==null?'—':headings[Math.round(h/45)%8];}
+var watchId=null,coords=null,history=[],dirs=['N','NE','E','SE','S','SW','W','NW'];
+function show(id){document.getElementById(id).classList.remove('hide')}
+function hide(id){document.getElementById(id).classList.add('hide')}
+function deg2dir(h){return h==null?'—':dirs[Math.round(h/45)%8]}
 
 function startTracking(){
-  if(!navigator.geolocation){alert('Browser ไม่รองรับ Geolocation');return;}
-  document.getElementById('btnStart').innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i>กำลังค้นหา...';
-  document.getElementById('btnStart').disabled=true;
-  document.getElementById('ring').classList.add('active');
-  document.getElementById('hSub').textContent='กำลังระบุตำแหน่ง...';
-
-  const opts={enableHighAccuracy:true,timeout:15000,maximumAge:0};
-  watchId=navigator.geolocation.watchPosition(onPos,onErr,opts);
-  timerInterval=setInterval(()=>{},intervalMs);
+  if(!navigator.geolocation){setSub('เบราว์เซอร์ไม่รองรับ GPS');return}
+  var btn=document.getElementById('btnMain');
+  btn.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i>กำลังค้นหา...';
+  btn.disabled=true;
+  setSub('กำลังระบุตำแหน่ง...');
+  ring('pulse');
+  watchId=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 
 function onPos(p){
   coords={lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy),spd:p.coords.speed,head:p.coords.heading};
-  const now=new Date();
-
+  var t=new Date();
   document.getElementById('vLat').textContent=coords.lat.toFixed(6);
   document.getElementById('vLng').textContent=coords.lng.toFixed(6);
-  document.getElementById('vAcc').innerHTML=coords.acc+'<span class="m-unit">เมตร</span>';
-  const pct=Math.max(10,Math.min(100,100-(coords.acc/300*100)));
-  document.getElementById('accFill').style.width=pct+'%';
-  document.getElementById('accFill').style.background=coords.acc>150?'#BA7517':'#1D9E75';
-
-  const spd=coords.spd!=null?Math.round(coords.spd*3.6):0;
-  document.getElementById('vSpeed').innerHTML=spd+'<span class="m-unit">กม./ชม.</span>';
-  document.getElementById('vHeading').textContent=degToDir(coords.head);
-
-  const mapUrl='https://www.google.com/maps/place/'+coords.lat+','+coords.lng+'/@'+coords.lat+','+coords.lng+',16z';
-  document.getElementById('mapLink').href=mapUrl;
-  document.getElementById('lastUpdate').textContent='อัปเดต '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-  document.getElementById('metricsBox').style.display='grid';
-  document.getElementById('addrCard').style.display='block';
-  document.getElementById('speedCard').style.display='grid';
-  document.getElementById('mapLink').style.display='flex';
-  document.getElementById('updateRow').style.display='flex';
-  document.getElementById('histCard').style.display='block';
-  document.getElementById('btnCopy').style.display='flex';
-  document.getElementById('btnShare').style.display='flex';
-
-  document.getElementById('ring').classList.remove('active','error');
-  document.getElementById('ring').classList.add('found');
-  document.getElementById('hSub').textContent='ติดตามพิกัดแบบ real-time';
-
-  const badge=document.getElementById('liveBadge');
-  badge.className='badge-live on';
-  document.getElementById('liveDot').className='dot blink';
-  document.getElementById('liveText').textContent='Live';
-
-  document.getElementById('btnStart').innerHTML='<i class="ti ti-player-stop"></i>หยุดติดตาม';
-  document.getElementById('btnStart').className='btn-main btn-stop';
-  document.getElementById('btnStart').disabled=false;
-  document.getElementById('btnStart').onclick=stopTracking;
-
-  addHistory(coords,now);
-  getAddress(coords.lat,coords.lng);
+  document.getElementById('vAcc').innerHTML=coords.acc+'<span class="munit">เมตร</span>';
+  var pct=Math.max(10,Math.min(100,100-(coords.acc/300*100)));
+  var fill=document.getElementById('accfill');
+  fill.style.width=pct+'%';
+  fill.style.background=coords.acc>150?'#BA7517':'#1D9E75';
+  var spd=coords.spd!=null?Math.round(coords.spd*3.6):0;
+  document.getElementById('vSpeed').innerHTML=spd+'<span class="munit">กม./ชม.</span>';
+  document.getElementById('vDir').textContent=deg2dir(coords.head);
+  document.getElementById('mapLink').href='https://www.google.com/maps/place/'+coords.lat+','+coords.lng+'/@'+coords.lat+','+coords.lng+',16z';
+  document.getElementById('lastUp').textContent='อัปเดต '+t.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  show('metricsBox');show('speedCard');show('addrCard');show('ctrlCard');show('histCard');
+  show('btnCopy');show('btnShare');
+  ring('ok');setSub('ติดตามพิกัดแบบ real-time');
+  setBadge(true);
+  var btn=document.getElementById('btnMain');
+  btn.className='btnmain stop';btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-player-stop"></i>หยุดติดตาม';
+  btn.onclick=stopTracking;
+  addHist(coords,t);
+  getAddr(coords.lat,coords.lng);
 }
 
 function onErr(e){
-  const m={1:'ไม่ได้รับอนุญาต กรุณาอนุญาต GPS',2:'ไม่สามารถระบุตำแหน่งได้',3:'หมดเวลาค้นหา'};
-  document.getElementById('hSub').textContent=m[e.code]||'เกิดข้อผิดพลาด';
-  document.getElementById('ring').classList.remove('active','found');
-  document.getElementById('ring').classList.add('error');
-  document.getElementById('btnStart').innerHTML='<i class="ti ti-refresh"></i>ลองอีกครั้ง';
-  document.getElementById('btnStart').disabled=false;
-  document.getElementById('btnStart').onclick=startTracking;
+  var m={1:'ไม่ได้รับอนุญาต — กรุณาอนุญาต GPS ในเบราว์เซอร์',2:'ไม่สามารถระบุตำแหน่งได้',3:'หมดเวลาค้นหา กรุณาลองอีกครั้ง'};
+  setSub(m[e.code]||'เกิดข้อผิดพลาด');
+  ring('err');setBadge(false);
+  var btn=document.getElementById('btnMain');
+  btn.className='btnmain start';btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-refresh"></i>ลองอีกครั้ง';
+  btn.onclick=startTracking;
 }
 
 function stopTracking(){
-  if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null;}
-  clearInterval(timerInterval);
-  document.getElementById('btnStart').innerHTML='<i class="ti ti-current-location"></i>เริ่มติดตาม';
-  document.getElementById('btnStart').className='btn-main btn-start';
-  document.getElementById('btnStart').onclick=startTracking;
-  document.getElementById('ring').classList.remove('active','found','error');
-  const badge=document.getElementById('liveBadge');
-  badge.className='badge-live off';
-  document.getElementById('liveDot').className='dot';
-  document.getElementById('liveText').textContent='หยุดแล้ว';
-  document.getElementById('hSub').textContent='กดเริ่มเพื่อติดตามอีกครั้ง';
+  if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null}
+  ring('');setSub('หยุดติดตามแล้ว');setBadge(false,'หยุดแล้ว');
+  var btn=document.getElementById('btnMain');
+  btn.className='btnmain start';
+  btn.innerHTML='<i class="ti ti-current-location"></i>เริ่มติดตาม';
+  btn.onclick=startTracking;btn.disabled=false;
 }
 
 function changeInterval(){
-  intervalMs=parseInt(document.getElementById('selInterval').value);
-  if(watchId!=null){stopTracking();startTracking();}
+  if(watchId!=null){stopTracking();startTracking()}
 }
 
-async function getAddress(lat,lng){
+function ring(s){
+  var r=document.getElementById('ring');
+  r.className='ring'+(s?' '+s:'');
+}
+function setSub(t){document.getElementById('hSub').textContent=t}
+function setBadge(on,label){
+  var b=document.getElementById('badge');
+  b.className='badge'+(on?' on':'');
+  document.getElementById('bdot').className='dot'+(on?' blink':'');
+  document.getElementById('btxt').textContent=label||(on?'Live':'ไม่ได้ใช้งาน');
+}
+
+async function getAddr(lat,lng){
+  document.getElementById('vAddr').textContent='กำลังค้นหา...';
   try{
-    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=th`);
-    const d=await r.json();
-    const parts=[d.address?.road,d.address?.suburb||d.address?.village,d.address?.city||d.address?.town,d.address?.state].filter(Boolean);
-    document.getElementById('vAddr').textContent=parts.join(', ')||d.display_name||'ไม่พบข้อมูลที่อยู่';
-  }catch{document.getElementById('vAddr').textContent='ไม่สามารถดึงข้อมูลที่อยู่ได้';}
+    var r=await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=th');
+    var d=await r.json();
+    var a=d.address||{};
+    var parts=[a.road,a.suburb||a.village||a.neighbourhood,a.city||a.town||a.county,a.state].filter(Boolean);
+    document.getElementById('vAddr').textContent=parts.join(', ')||d.display_name||'ไม่พบข้อมูล';
+  }catch{document.getElementById('vAddr').textContent='ไม่สามารถดึงข้อมูลที่อยู่ได้'}
 }
 
-function addHistory(c,t){
+function addHist(c,t){
   history.unshift({lat:c.lat,lng:c.lng,time:t});
   if(history.length>10)history.pop();
-  const list=document.getElementById('histList');
-  list.innerHTML=history.map((h,i)=>`
-    <div class="h-row">
-      <span class="h-coords">${h.lat.toFixed(5)}, ${h.lng.toFixed(5)}</span>
-      <span class="h-time">${h.time.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span>
-    </div>`).join('');
+  document.getElementById('histList').innerHTML=history.map(function(h){
+    return '<div class="hrow"><span class="hcoords">'+h.lat.toFixed(5)+', '+h.lng.toFixed(5)+'</span><span class="htime">'+h.time.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+'</span></div>';
+  }).join('');
 }
-
-function clearHistory(){history=[];document.getElementById('histList').innerHTML='<div class="empty-state">ยังไม่มีประวัติ</div>';}
+function clearHist(){history=[];document.getElementById('histList').innerHTML='<div class="empty">ยังไม่มีประวัติ</div>'}
 
 function copyCoords(){
   if(!coords)return;
   navigator.clipboard.writeText(coords.lat.toFixed(6)+', '+coords.lng.toFixed(6));
-  showToast('คัดลอกพิกัดแล้ว');
+  toast('คัดลอกพิกัดแล้ว');
 }
-
 function shareLocation(){
   if(!coords)return;
-  const url='https://www.google.com/maps?q='+coords.lat+','+coords.lng;
-  if(navigator.share){navigator.share({title:'ตำแหน่งของฉัน',url});}
-  else{navigator.clipboard.writeText(url);showToast('คัดลอกลิงก์แล้ว');}
+  var url='https://www.google.com/maps?q='+coords.lat+','+coords.lng;
+  if(navigator.share){navigator.share({title:'ตำแหน่งของฉัน',url:url})}
+  else{navigator.clipboard.writeText(url);toast('คัดลอกลิงก์แล้ว')}
 }
-
-function showToast(msg){
-  const t=document.createElement('div');
+function toast(msg){
+  var t=document.createElement('div');
   t.textContent=msg;
-  t.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#185FA5;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-family:Prompt,sans-serif;z-index:9999;white-space:nowrap;';
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2200);
+  t.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#185FA5;color:#fff;padding:8px 18px;border-radius:20px;font-size:13px;font-family:Prompt,sans-serif;z-index:9999;white-space:nowrap;pointer-events:none';
+  document.body.appendChild(t);setTimeout(function(){t.remove()},2200);
 }
 </script>
